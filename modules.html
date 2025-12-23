@@ -7,75 +7,164 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-top">
-      <a href="index.html" class="secondary">← Retour à la présentation</a>
-    </div>
-    <h1>Choix des modules</h1>
-    <p>Sélectionnez les modules que vous souhaitez activer pour votre compte.</p>
-  </header>
-  <main class="container">
-    <section id="catalog" class="catalog">
-      <!-- Modules will be rendered here from modules/modules.json -->
-      <div class="grid" id="modulesGrid"></div>
-    </section>
-    <aside class="summary">
-      <h3>Résumé</h3>
-      <ul id="selectedList"></ul>
-      <div class="totals">
-        <div>Montant:</div>
-        <div id="total">0€ / mois</div>
+  <header class="modules-header">
+    <div class="modules-header-inner">
+      <div class="modules-brand">
+        <a href="index.html" class="brand-link">← SkyVault</a>
+        <div class="modules-title">
+          <h1>Configurez votre SkyVault</h1>
+          <p>Choisissez les modules adaptés à vos besoins</p>
+        </div>
       </div>
-      <button id="checkout" type="button" class="primary" disabled>Procéder au paiement</button>
+    </div>
+  </header>
+  <div class="modules-layout">
+    <aside class="modules-sidebar">
+      <div class="sidebar-sticky">
+        <div class="sidebar-section">
+          <h3>Résumé</h3>
+          <div id="selectedList" class="selected-modules"></div>
+          <div class="sidebar-total">
+            <div class="total-label">Total</div>
+            <div id="total" class="total-amount">0€ / mois</div>
+          </div>
+        </div>
+        <button id="checkout" type="button" class="primary" disabled>Valider ma sélection</button>
+        <div class="sidebar-footer">
+          <div id="priceToggleWrap"></div>
+        </div>
+      </div>
     </aside>
-  </main>
+    <main class="modules-content">
+      <div id="modulesGrid" class="modules-catalog"></div>
+    </main>
+  </div>
   <script>
     // Load modules metadata and render cards dynamically
     async function loadModules(){
-      try{
-        const res = await fetch('modules/modules.json');
-        const modules = await res.json();
-        const grid = document.getElementById('modulesGrid');
-        grid.innerHTML = modules.map(m => `
-          <label class="card">
-            <input type="checkbox" data-price="${m.price}" data-slug="${m.slug}" />
-            <div class="card-body">
-              <strong>${m.title}</strong>
-              <span class="muted">${m.description}</span>
-              <div class="price">${m.price}€/mois</div>
-              <div style="margin-top:8px"><a href="${m.path}" class="secondary" target="_blank">Voir</a></div>
-            </div>
-          </label>
-        `).join('');
-        // Rewire behavior after injection
-        initSummary();
-      }catch(e){
-        console.error('Unable to load modules', e);
-      }
+        try{
+          const res = await fetch('modules/modules.json');
+          const modules = await res.json();
+
+          // Group modules by category (derived from path e.g. modules/finance/...)
+          const categories = {};
+          modules.forEach(m => {
+            const parts = (m.path || '').split('/');
+            const cat = parts[1] || 'autres';
+            if(!categories[cat]) categories[cat] = [];
+            categories[cat].push(m);
+          });
+
+          // Render separate price toggle into its own container
+          const priceWrap = document.getElementById('priceToggleWrap');
+          priceWrap.innerHTML = '<button id="priceToggle" class="priceToggleBtn">Prix HT</button>';
+
+          // Render categories with module cards
+          const grid = document.getElementById('modulesGrid');
+          grid.innerHTML = Object.keys(categories).map(cat => {
+            const label = cat.replace(/-/g,' ').replace(/\b\w/g, l=>l.toUpperCase());
+            const cards = categories[cat].map(m=>`
+              <label class="module-card">
+                <input type="checkbox" data-price="${m.price}" data-slug="${m.slug}" />
+                <div class="module-card-content">
+                  <div class="module-header">
+                    <strong id="t-${m.slug}">${m.title}</strong>
+                    <div class="price" data-price="${m.price}">${m.price}€ HT / mois</div>
+                  </div>
+                  <p class="module-description">${m.description}</p>
+                  <a href="${m.path}" class="module-link">En savoir plus →</a>
+                </div>
+              </label>
+            `).join('');
+            return `
+              <section class="category-section" id="cat-${cat}">
+                <h2 class="category-title">${label}</h2>
+                <div class="grid">${cards}</div>
+              </section>
+            `;
+          }).join('');
+
+          // Rewire behavior after injection
+          initSummary();
+
+          // Price display (HT/TTC)
+          const VAT = 0.20;
+          const priceToggle = document.getElementById('priceToggle');
+          const priceState = localStorage.getItem('priceDisplay') || 'ht';
+          function formatPrice(ht){
+            if(priceStateGlobal === 'ht') return `${ht}€ HT / mois`;
+            const ttc = (ht * (1+VAT));
+            return `${ttc.toFixed(2)}€ TTC / mois`;
+          }
+          // maintain a global state variable so updateSummary can read it
+          let priceStateGlobal = localStorage.getItem('priceDisplay') || 'ht';
+          function applyPriceDisplay(){
+            document.querySelectorAll('.price').forEach(el=>{
+              const ht = Number(el.dataset.price||0);
+              if(priceStateGlobal === 'ht') el.textContent = `${ht}€ HT / mois`;
+              else el.textContent = `${(ht * 1.2).toFixed(2)}€ TTC / mois`;
+            });
+            priceToggle.textContent = `Prix ${priceStateGlobal === 'ht' ? 'HT' : 'TTC'}`;
+            // update summary to reflect current display
+            document.querySelectorAll('.module-card input[type="checkbox"]').forEach(cb=>cb.dispatchEvent(new Event('change')));
+          }
+          priceToggle.addEventListener('click', function(){ priceStateGlobal = (priceStateGlobal === 'ht' ? 'ttc' : 'ht'); localStorage.setItem('priceDisplay', priceStateGlobal); applyPriceDisplay(); });
+          applyPriceDisplay();
+        }catch(e){
+          console.error('Unable to load modules', e);
+          const grid = document.getElementById('modulesGrid');
+          grid.innerHTML = '<div class="muted">Impossible de charger la liste des modules. Réessayez plus tard.</div>';
+        }
     }
 
     function initSummary(){
-      const checkboxes = document.querySelectorAll('.card input[type="checkbox"]');
+      const checkboxes = document.querySelectorAll('.module-card input[type="checkbox"]');
       const list = document.getElementById('selectedList');
       const totalEl = document.getElementById('total');
       const checkout = document.getElementById('checkout');
 
+      // Restaurer la sélection depuis sessionStorage
+      const savedSelection = JSON.parse(sessionStorage.getItem('moduleSelection') || '[]');
+      checkboxes.forEach(cb => {
+        if(savedSelection.includes(cb.dataset.slug)){
+          cb.checked = true;
+        }
+      });
+
       function updateSummary(){
         list.innerHTML = '';
-        let total = 0;
+        let total_ht = 0;
+        const display = localStorage.getItem('priceDisplay') || 'ht';
+        const selectedSlugs = [];
         checkboxes.forEach(cb=>{
           if(cb.checked){
-            const name = cb.closest('.card').querySelector('strong').innerText;
-            const price = Number(cb.dataset.price||0);
-            total += price;
-            const li = document.createElement('li');
-            li.textContent = `${name} — ${price}€/mois`;
-            list.appendChild(li);
+            selectedSlugs.push(cb.dataset.slug);
+            const card = cb.closest('.module-card');
+            const name = card.querySelector('strong').innerText;
+            const price_ht = Number(cb.dataset.price||0);
+            total_ht += price_ht;
+            const item = document.createElement('div');
+            item.className = 'selected-item';
+            const nameDiv = document.createElement('div');
+            nameDiv.className = 'selected-item-name';
+            nameDiv.textContent = name;
+            const priceDiv = document.createElement('div');
+            priceDiv.className = 'selected-item-price';
+            if(display === 'ht') priceDiv.textContent = `${price_ht}€ HT / mois`;
+            else priceDiv.textContent = `${(price_ht*1.2).toFixed(2)}€ TTC / mois`;
+            item.appendChild(nameDiv);
+            item.appendChild(priceDiv);
+            list.appendChild(item);
           }
         });
-        totalEl.textContent = total + '€ / mois';
-        checkout.dataset.total = total.toFixed(2);
-        checkout.disabled = total === 0;
+        // Sauvegarder la sélection dans sessionStorage
+        sessionStorage.setItem('moduleSelection', JSON.stringify(selectedSlugs));
+        const total_ttc = (total_ht * 1.2);
+        if(display === 'ht') totalEl.textContent = `${total_ht}€ HT / mois`;
+        else totalEl.textContent = `${total_ttc.toFixed(2)}€ TTC / mois`;
+        checkout.dataset.total_ht = total_ht.toFixed(2);
+        checkout.dataset.total_ttc = total_ttc.toFixed(2);
+        checkout.disabled = total_ht === 0;
       }
 
       checkboxes.forEach(cb=>cb.addEventListener('change', updateSummary));
@@ -85,15 +174,19 @@
       checkout.addEventListener('click', function(){
         if(checkout.disabled) return;
         // Utiliser le total calculé (dataset mis à jour dans updateSummary) — et fallback sur recalcul
-        const total = Number(checkout.dataset.total || Array.from(checkboxes).reduce((s,cb)=>s + (cb.checked?Number(cb.dataset.price||0):0),0));
+        const total_ht = Number(checkout.dataset.total_ht || 0);
+        const total_ttc = Number(checkout.dataset.total_ttc || 0);
         const selectedItems = Array.from(checkboxes).filter(cb=>cb.checked).map(cb=>{
+          const price_ht = Number(cb.dataset.price||0);
+          const card = cb.closest('.module-card');
           return {
-            name: cb.closest('.card').querySelector('strong').innerText,
-            price: Number(cb.dataset.price||0)
+            name: card.querySelector('strong').innerText,
+            price_ht: price_ht,
+            price_ttc: (price_ht * 1.2).toFixed(2)
           };
         });
         try{
-          sessionStorage.setItem('checkoutData', JSON.stringify({amount:Number(total).toFixed(2), items:selectedItems}));
+          sessionStorage.setItem('checkoutData', JSON.stringify({items:selectedItems,total_ht: total_ht.toFixed(2), total_ttc: total_ttc.toFixed(2)}));
         }catch(e){/* ignore */}
         // redirection sans montant dans l'URL
         location.href = 'payment.html';

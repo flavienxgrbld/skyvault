@@ -32,6 +32,7 @@
         <input id="amount" name="amount" type="number" min="0" step="0.01" required value="9.99" readonly aria-readonly="true" title="Montant fixé">
         <!-- Valeur en centimes pour envoi serveur et vérification (hidden) -->
         <input id="amount_cents" name="amount_cents" type="hidden" value="999">
+        <div id="totalsDisplay" class="muted" style="margin-top:8px;">Total: <span id="totalHT">0</span>€ HT / <span id="totalTTC">0</span>€ TTC</div>
       </div>
 
       <fieldset class="card-group">

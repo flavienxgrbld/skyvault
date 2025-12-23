@@ -7,190 +7,148 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="site-header">
-    <div>
-      <h1>SkyVault</h1>
-      <p>Plateforme modulaire pour entreprises — choisissez uniquement ce dont vous avez besoin.</p>
-    </div>
-    <div class="header-actions">
-      <a href="client/login.html" class="secondary">Connexion interface client</a>
-    </div>
+  <a class="skip-link" href="#main" style="position:absolute;left:-9999px;top:auto;">Aller au contenu</a>
+  <header class="topnav" role="banner">
+    <div class="brand"><h1>SkyVault</h1><small class="muted">Modules à la carte</small></div>
+    <nav class="nav-actions" aria-label="Navigation principale">
+      <a href="modules.html" class="secondary">Modules</a>
+      <a href="client/login.html" class="secondary">Connexion</a>
+    </nav>
   </header>
-  <main style="max-width:900px;margin:48px auto;padding:0 20px;">
-    <!-- HERO -->
-    <section class="hero">
-      <div class="hero-left">
-        <h2>Déployez les bons outils pour votre entreprise</h2>
-        <p class="lead">SkyVault propose des modules métiers à la carte — activez uniquement ce dont vous avez besoin et payez par module.</p>
+
+  <main id="main">
+    <section class="hero-full" aria-labelledby="hero-title">
+      <div class="hero-card">
+        <h2 id="hero-title">Construisez votre plateforme sur mesure</h2>
+        <p class="lead">Ne payez que ce dont vous avez besoin. Activez vos modules en quelques clics, sans engagement de durée.</p>
         <div class="hero-ctas">
-          <a href="modules.html" class="primary">Choisir mes modules</a>
-          <a href="client/login.html" class="secondary">Connexion interface client</a>
+          <a href="modules.html" class="btn-primary-large">Explorer les modules →</a>
+          <a href="client/login.html" class="btn-ghost-large">Espace client</a>
         </div>
-        <ul class="how-list">
-          <li><strong>Rapide</strong> — mise en place en quelques minutes</li>
-          <li><strong>Sécurisé</strong> — conformité entreprise</li>
-        </ul>
+        <div class="hero-features">
+          <span class="hero-feature-item">✓ Sans engagement</span>
+          <span class="hero-feature-item">✓ Support dédié</span>
+        </div>
       </div>
-      <div class="hero-right">
-        <!-- simple illustrative SVG -->
-        <svg width="320" height="220" viewBox="0 0 320 220" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <rect x="0" y="0" width="320" height="220" rx="12" fill="#f4f6f8" />
-          <g transform="translate(24,24)">
-            <rect x="0" y="0" width="120" height="60" rx="8" fill="#fff" stroke="#e6e9ef"/>
-            <rect x="140" y="0" width="120" height="60" rx="8" fill="#fff" stroke="#e6e9ef"/>
-            <rect x="0" y="80" width="260" height="80" rx="8" fill="#fff" stroke="#e6e9ef"/>
-          </g>
-        </svg>
+      <div class="hero-right" aria-hidden="true">
       </div>
     </section>
 
-    <!-- Modules populaires -->
-    <section class="popular-modules" aria-labelledby="popular-title">
-      <h3 id="popular-title">Modules populaires</h3>
-      <div id="popularGrid" class="modules-grid"></div>
-      <div style="text-align:center;margin-top:14px;"><a href="modules.html" class="secondary">Voir tous les modules</a></div>
-      <div style="margin-top:12px;text-align:center;">
-        <small class="muted">Par catégories:</small>
-        <div style="margin-top:8px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-          <a href="/modules/finance/index.html" class="secondary">Finance</a>
-          <a href="/modules/ventes/index.html" class="secondary">Ventes</a>
-          <a href="/modules/communication/index.html" class="secondary">Communication</a>
-          <a href="/modules/rh/index.html" class="secondary">RH</a>
-          <a href="/modules/chaine-approvisionnement/index.html" class="secondary">Chaîne</a>
-          <a href="/modules/services/index.html" class="secondary">Services</a>
-          <a href="/modules/productivite/index.html" class="secondary">Productivité</a>
+    <section class="section features-section" aria-labelledby="features-title">
+      <div class="section-header">
+        <h3 id="features-title">Pourquoi choisir SkyVault</h3>
+        <p class="section-subtitle">Une plateforme pensée pour s'adapter à vos besoins</p>
+      </div>
+      <div class="features" role="list">
+        <div class="feature" role="listitem">
+          <strong>100% Modulaire</strong>
+          <div class="muted">Activez uniquement les modules dont vous avez besoin. Changez à tout moment.</div>
+        </div>
+        <div class="feature" role="listitem">
+          <strong>Sécurisé & Conforme</strong>
+          <div class="muted">Conformité RGPD, hébergement sécurisé et sauvegardes automatiques.</div>
+        </div>
+        <div class="feature" role="listitem">
+          <strong>Intégrations</strong>
+          <div class="muted">API RESTful pour connecter vos outils existants sans friction.</div>
         </div>
       </div>
     </section>
 
-    <section style="margin-top:36px;border-top:1px solid var(--border);padding-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-      <div>
-        <h3 style="margin:0 0 8px;color:var(--accent)">Pourquoi SkyVault ?</h3>
-        <ul style="margin:0;padding-left:18px;color:var(--muted)">
-          <li>Configuration modulaire et facturation claire</li>
-          <li>Mise en place rapide — pas d'installation lourde</li>
-          <li>Sécurité et conformité pour entreprises</li>
-        </ul>
+    <section class="section popular-section" aria-labelledby="popular-title">
+      <div class="section-header">
+        <h3 id="popular-title">Modules les plus populaires</h3>
+        <p class="section-subtitle">Découvrez les fonctionnalités les plus utilisées par nos clients</p>
       </div>
-      <div>
-        <h3 style="margin:0 0 8px;color:var(--accent)">Pour le MVP</h3>
-        <p style="margin:0;color:var(--muted)">Nous commençons par les modules essentiels et ajoutons d'autres fonctionnalités après retours utilisateurs.</p>
-      </div>
+      <div id="popularGrid" class="modules-grid" aria-live="polite"></div>
+      <div style="margin-top:24px;text-align:center"><a href="modules.html" class="btn-outline">Découvrir tous les modules →</a></div>
     </section>
 
-    <!-- How it works -->
-    <section style="margin-top:28px;">
-      <h3 style="margin:0 0 8px;color:var(--accent)">Comment ça marche</h3>
+    <section class="section how-section" aria-labelledby="how-title">
+      <div class="section-header">
+        <h3 id="how-title">Démarrez en 3 étapes simples</h3>
+        <p class="section-subtitle">De la sélection au déploiement, tout est pensé pour la simplicité</p>
+      </div>
       <div class="how-steps">
-        <div class="step"><div class="num">1</div><h4>Choisissez</h4><div class="muted">Parcourez les modules et sélectionnez ceux qui vous conviennent.</div></div>
-        <div class="step"><div class="num">2</div><h4>Configurez</h4><div class="muted">Ajustez les options et les accès pour votre équipe.</div></div>
-        <div class="step"><div class="num">3</div><h4>Paiement</h4><div class="muted">Paiement sécurisé et confirmation par e-mail.</div></div>
+        <div class="step">
+          <div class="num">1</div>
+          <h4>Sélectionnez</h4>
+          <div class="muted">Parcourez le catalogue et choisissez les modules adaptés à vos besoins métier.</div>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h4>Configurez</h4>
+          <div class="muted">Paramétrez rôles, accès et permissions depuis une interface intuitive.</div>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h4>Lancez</h4>
+          <div class="muted">Déploiement instantané avec support dédié pour accompagner vos équipes.</div>
+        </div>
       </div>
     </section>
 
-    <!-- Testimonials -->
-    <section style="margin-top:28px;">
-      <h3 style="margin:0 0 8px;color:var(--accent)">Témoignages</h3>
-      <div class="testimonials">
-        <div class="testimonial"><p>SkyVault nous a permis de déployer un espace RH en quelques heures — très efficace.</p><div class="author">— Marine, DRH</div></div>
-        <div class="testimonial"><p>La modularité est très pratique: nous payons seulement ce dont on a besoin.</p><div class="author">— Karim, CTO</div></div>
-        <div class="testimonial"><p>Support réactif et intégration facile avec nos outils internes.</p><div class="author">— Léa, Opérations</div></div>
-      </div>
-    </section>
 
-    <!-- Newsletter -->
-    <section style="margin-top:28px;">
-      <h3 style="margin:0 0 8px;color:var(--accent)">Restez informé</h3>
-      <div class="newsletter">
-        <input id="newsletterEmail" type="email" placeholder="Votre e-mail" aria-label="Votre e-mail pour la newsletter" />
-        <button id="newsletterSubmit" class="primary">S'inscrire</button>
-        <div id="newsletterMsg" style="margin-left:8px;color:var(--muted)"></div>
+
+    <section class="section newsletter-section" aria-labelledby="news-title">
+      <div class="newsletter-box">
+        <div class="newsletter-content">
+          <h3 id="news-title">Restez informé</h3>
+          <p class="muted">Recevez nos actualités, nouveaux modules et conseils d'utilisation.</p>
+        </div>
+        <div class="newsletter-form">
+          <input id="newsletterEmail" type="email" placeholder="Votre adresse e-mail" aria-label="Votre e-mail pour la newsletter" class="newsletter-input" />
+          <button id="newsletterSubmit" class="btn-newsletter">S'inscrire</button>
+        </div>
+        <div id="newsletterMsg" class="newsletter-msg"></div>
       </div>
     </section>
   </main>
-  <footer style="text-align:center;padding:28px 12px;color:var(--muted);border-top:1px solid var(--border)">© <span id="year"></span> SkyVault</footer>
-  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
-  <!-- Mini cart -->
-  <aside class="mini-cart" id="miniCart" aria-live="polite">
-    <h4>Panier (<span id="cartCount">0</span>)</h4>
-    <ul id="cartItems"></ul>
-    <div class="total">Total: <span id="cartTotal">0</span>€</div>
-    <button id="checkoutBtn" class="primary checkout">Procéder au paiement</button>
-    <button id="clearCart" class="secondary" style="margin-top:8px;">Vider</button>
-  </aside>
+
+  <footer class="site-footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <strong>SkyVault</strong>
+        <p class="muted">La plateforme modulaire pour entreprises</p>
+      </div>
+      <div class="footer-copy">
+        <small>© <span id="year"></span> SkyVault. Tous droits réservés.</small>
+      </div>
+    </div>
+  </footer>
+
+
+
   <script>
-    // Newsletter handler
-    document.getElementById('newsletterSubmit').addEventListener('click', function(){
-      const email = document.getElementById('newsletterEmail').value.trim();
-      const msg = document.getElementById('newsletterMsg');
-      const re = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-      if(!re.test(email)){ msg.textContent = 'Adresse e-mail invalide'; msg.style.color='crimson'; return; }
-      const list = JSON.parse(localStorage.getItem('newsletter_subscribers')||'[]');
-      if(list.find(x=>x.email===email)){ msg.textContent='Déjà inscrit'; msg.style.color='var(--muted)'; return; }
-      list.push({email, date:new Date().toISOString()}); localStorage.setItem('newsletter_subscribers', JSON.stringify(list));
-      msg.textContent = "Merci — nous vous tiendrons informé(e)!"; msg.style.color='green'; document.getElementById('newsletterEmail').value = '';
-    });
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-    // Mini cart rendering
-    async function renderMiniCart(){
-      const cart = JSON.parse(sessionStorage.getItem('cart')||'[]');
-      const countEl = document.getElementById('cartCount');
-      const itemsEl = document.getElementById('cartItems');
-      const totalEl = document.getElementById('cartTotal');
-      countEl.textContent = cart.length;
-      if(cart.length===0){ itemsEl.innerHTML = '<li class="muted">Votre panier est vide</li>'; totalEl.textContent = '0'; return; }
-      try{
-        const res = await fetch('modules/modules.json'); const mods = await res.json();
-        const items = cart.map(slug=>mods.find(m=>m.slug===slug)).filter(Boolean);
-        itemsEl.innerHTML = items.map(it=>`<li style="padding:6px 0;border-bottom:1px solid #f3f4f6">${it.title} <span style="float:right;color:var(--muted)">${it.price}€</span></li>`).join('');
-        const total = items.reduce((s,i)=>s+(i.price||0),0);
-        totalEl.textContent = total;
-      }catch(e){console.error(e)}
-    }
-
-    // Checkout action
-    document.getElementById('checkoutBtn').addEventListener('click', async function(){
-      const cart = JSON.parse(sessionStorage.getItem('cart')||'[]'); if(cart.length===0) return alert('Votre panier est vide');
-      const res = await fetch('modules/modules.json'); const mods = await res.json();
-      const items = cart.map(slug=>mods.find(m=>m.slug===slug)).filter(Boolean);
-      const total = items.reduce((s,i)=>s+(i.price||0),0);
-      sessionStorage.setItem('checkoutData', JSON.stringify({items,total}));
-      window.location.href = 'payment.html';
-    });
-
-    document.getElementById('clearCart').addEventListener('click', function(){ sessionStorage.removeItem('cart'); renderMiniCart(); });
-
-    // update when add buttons are clicked in popular modules
-    document.addEventListener('click', function(e){ if(e.target && e.target.matches('button.primary[data-slug]')){ setTimeout(renderMiniCart,60); }});
-    // initial render
-    renderMiniCart();
-  </script>
-  <script>
-    // Load popular modules (top 6 by price)
+    // Popular modules loader
     (async function(){
       try{
-        const res = await fetch('modules/modules.json');
-        const mods = await res.json();
+        const res = await fetch('modules/modules.json'); const mods = await res.json();
         const popular = mods.sort((a,b)=>b.price-a.price).slice(0,6);
         const grid = document.getElementById('popularGrid');
         grid.innerHTML = popular.map(m=>`
-          <article class="module-card" aria-labelledby="m-${m.slug}">
-            <h4 id="m-${m.slug}">${m.title}</h4>
-            <div class="muted">${m.description}</div>
-            <div class="price">${m.price}€/mois</div>
-            <div class="actions"><a href="${m.path}" class="secondary">Voir</a><button class="primary" data-slug="${m.slug}">Ajouter</button></div>
+          <article class="popular-module-card" aria-labelledby="m-${m.slug}">
+            <div class="module-card-header">
+              <h4 id="m-${m.slug}">${m.title}</h4>
+              <div class="module-price">${m.price}€<span class="price-period">/mois</span></div>
+            </div>
+            <p class="module-desc">${m.description}</p>
+            <a href="modules.html" class="btn-add-module">En savoir plus →</a>
           </article>
         `).join('');
-        grid.querySelectorAll('button.primary').forEach(btn=>btn.addEventListener('click', ()=>{
-          // simulate add to basket in sessionStorage
-          try{
-            const cart = JSON.parse(sessionStorage.getItem('cart')||'[]');
-            const slug = btn.dataset.slug; if(!cart.includes(slug)) cart.push(slug); sessionStorage.setItem('cart', JSON.stringify(cart));
-            btn.textContent = 'Ajouté'; btn.disabled = true;
-          }catch(e){}
-        }));
       }catch(e){console.error(e)}
     })();
+
+    // Newsletter
+    document.getElementById('newsletterSubmit').addEventListener('click', function(){
+      const email = document.getElementById('newsletterEmail').value.trim(); const msg = document.getElementById('newsletterMsg');
+      const re = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+      if(!re.test(email)){ msg.textContent = 'Adresse e-mail invalide'; msg.style.color='crimson'; return; }
+      const list = JSON.parse(localStorage.getItem('newsletter_subscribers')||'[]'); if(list.find(x=>x.email===email)){ msg.textContent='Déjà inscrit'; msg.style.color='var(--muted)'; return; }
+      list.push({email,date:new Date().toISOString()}); localStorage.setItem('newsletter_subscribers', JSON.stringify(list)); msg.textContent='Merci — inscription confirmée'; msg.style.color='green'; document.getElementById('newsletterEmail').value='';
+    });
   </script>
 </body>
 </html>

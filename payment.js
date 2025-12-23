@@ -9,13 +9,27 @@ document.addEventListener('DOMContentLoaded', function () {
         const data = JSON.parse(raw);
         const amountInput = document.getElementById('amount');
         const amountCents = document.getElementById('amount_cents');
+        const totalsDisplay = document.getElementById('totalsDisplay');
+        const totalHTEl = document.getElementById('totalHT');
+        const totalTTCEl = document.getElementById('totalTTC');
         if(data.amount && amountInput){
+          // Legacy support: if 'amount' present use it as TTC
           amountInput.value = Number(data.amount).toFixed(2);
           amountInput.readOnly = true;
           amountInput.setAttribute('aria-readonly','true');
         }
-        if(data.amount && amountCents){
-          amountCents.value = Math.round(Number(data.amount) * 100);
+        // New format: support total_ht / total_ttc
+        if(data.total_ttc && amountInput){
+          amountInput.value = Number(data.total_ttc).toFixed(2);
+          amountInput.readOnly = true; amountInput.setAttribute('aria-readonly','true');
+        }
+        if(data.total_ttc && amountCents){
+          amountCents.value = Math.round(Number(data.total_ttc) * 100);
+        }
+        if(totalsDisplay && data.total_ht && data.total_ttc){
+          totalsDisplay.style.display = 'block';
+          totalHTEl.textContent = Number(data.total_ht).toFixed(2);
+          totalTTCEl.textContent = Number(data.total_ttc).toFixed(2);
         }
         if(Array.isArray(data.items) && data.items.length){
           const itemsList = document.getElementById('itemsList');
@@ -23,7 +37,13 @@ document.addEventListener('DOMContentLoaded', function () {
           itemsList.innerHTML = '';
           data.items.forEach(it => {
             const li = document.createElement('li');
-            li.textContent = it.name + ' — ' + it.price + '€/mois';
+            if(it.price_ht !== undefined && it.price_ttc !== undefined){
+              li.textContent = `${it.name} — ${it.price_ht}€ HT / ${it.price_ttc}€ TTC / mois`;
+            }else if(it.price !== undefined){
+              li.textContent = `${it.name} — ${it.price}€/mois`;
+            }else{
+              li.textContent = it.name;
+            }
             itemsList.appendChild(li);
           });
           section.hidden = false;
