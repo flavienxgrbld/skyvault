@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Module — Recrutement</title>
+  <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-top"><a href="../ressources-humaines/index.html" class="secondary">← Retour à la suite RH</a></div>
+    <h1>Recrutement</h1>
+    <p>Gestion des offres et des candidatures.</p>
+  </header>
+  <main class="container">
+    <section style="padding:20px;background:var(--surface);border-radius:8px;">
+      <h2>Offres</h2>
+      <button id="newOffer" class="primary">Nouvelle offre</button>
+      <ul id="offersList" style="margin-top:12px;padding:0;list-style:none"></ul>
+      <p style="margin-top:12px"><a href="../ressources-humaines/index.html" class="secondary">← Retour à la suite RH</a></p>
+    </section>
+
+    <script>
+      (function(){
+        const offers = [
+          {title:'Comptable confirmé', location:'Paris'},
+          {title:'Ingénieur QA', location:'Lyon'}
+        ];
+        const list = document.getElementById('offersList');
+        function render(){ list.innerHTML = offers.map(o=>`<li style="padding:8px;border-bottom:1px solid var(--border)"><strong>${o.title}</strong><div class=\"muted\">${o.location}</div></li>`).join(''); }
+        document.getElementById('newOffer').addEventListener('click', ()=>{ const t=prompt('Titre de l\'offre'); const l=prompt('Lieu'); if(t) { offers.push({title:t,location:l||''}); render(); } });
+        render();
+      })();
+    </script>
+  </main>
+</body>
+</html>

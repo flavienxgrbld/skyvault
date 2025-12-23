@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Module — Employés</title>
+  <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-top"><a href="../ressources-humaines/index.html" class="secondary">← Retour à la suite RH</a></div>
+    <h1>Employés</h1>
+    <p>Gestion des dossiers salariés et informations RH.</p>
+  </header>
+  <main class="container">
+    <section style="padding:20px;background:var(--surface);border-radius:8px;">
+      <h2>Gestion des employés</h2>
+      <p>Liste des employés et actions basiques (stockage local pour le prototype).</p>
+
+      <div style="margin-top:12px;">
+        <form id="employeeForm" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <input id="empName" placeholder="Nom" required style="flex:1;min-width:160px;padding:8px;border-radius:6px;border:1px solid var(--border)">
+          <input id="empEmail" type="email" placeholder="email@exemple.com" required style="width:220px;padding:8px;border-radius:6px;border:1px solid var(--border)">
+          <input id="empRole" placeholder="Rôle" style="width:140px;padding:8px;border-radius:6px;border:1px solid var(--border)">
+          <button id="addEmp" class="primary" type="submit">Ajouter</button>
+        </form>
+
+        <ul id="employeesList" style="margin-top:12px;padding:0;list-style:none"></ul>
+      </div>
+
+      <p style="margin-top:12px"><a href="../ressources-humaines/index.html" class="secondary">← Retour à la suite RH</a></p>
+    </section>
+
+    <script>
+      (function(){
+        const key = 'skyvault_employees';
+        const form = document.getElementById('employeeForm');
+        const listEl = document.getElementById('employeesList');
+
+        function load(){
+          const raw = localStorage.getItem(key);
+          return raw? JSON.parse(raw) : [];
+        }
+        function save(data){ localStorage.setItem(key, JSON.stringify(data)); }
+
+        function render(){
+          const items = load();
+          listEl.innerHTML = items.map((e,i)=>`<li style="padding:8px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div><strong>${e.name}</strong><div class=\"muted\">${e.email} • ${e.role||''}</div></div><div><button data-i="${i}" class="edit">✏️</button> <button data-i="${i}" class="del">🗑</button></div></li>`).join('');
+          listEl.querySelectorAll('.del').forEach(btn=>btn.addEventListener('click', ()=>{ const i=Number(btn.dataset.i); const arr=load(); arr.splice(i,1); save(arr); render(); }));
+          listEl.querySelectorAll('.edit').forEach(btn=>btn.addEventListener('click', ()=>{
+            const i=Number(btn.dataset.i); const arr=load(); const emp=arr[i];
+            document.getElementById('empName').value = emp.name;
+            document.getElementById('empEmail').value = emp.email;
+            document.getElementById('empRole').value = emp.role || '';
+            // remove and re-add on submit
+            arr.splice(i,1); save(arr); render();
+          }));
+        }
+
+        form.addEventListener('submit', function(ev){
+          ev.preventDefault();
+          const name = document.getElementById('empName').value.trim();
+          const email = document.getElementById('empEmail').value.trim();
+          const role = document.getElementById('empRole').value.trim();
+          if(!name || !email) return;
+          const arr = load(); arr.push({name,email,role,created:Date.now()}); save(arr); render();
+          form.reset(); document.getElementById('empName').focus();
+        });
+
+        render();
+      })();
+    </script>
+  </main>
+</body>
+</html>

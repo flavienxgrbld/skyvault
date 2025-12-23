@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Modules — Communication</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="site-header"><div><h1>Modules — Communication</h1><p>Blog, forum, chat et outils de communication.</p></div><div class="header-actions"><a href="/index.html" class="secondary">Accueil</a></div></header>
+  <main style="max-width:1100px;margin:28px auto;padding:0 20px;">
+    <section class="category">
+      <h2>Communication</h2>
+      <div id="grid" class="modules-grid"></div>
+    </section>
+  </main>
+  <script>
+    (async function(){
+      const res = await fetch('/modules/modules.json'); const mods = await res.json();
+      const list = mods.filter(m=>m.path && m.path.startsWith('modules/communication'));
+      const grid = document.getElementById('grid');
+      grid.innerHTML = list.map(m=>`
+        <article class="module-card"><h4>${m.title}</h4><div class="muted">${m.description}</div><div class="price">${m.price}€/mois</div><div class="actions"><a href="/${m.path}" class="secondary">Voir</a><button class="primary" data-slug="${m.slug}">Ajouter</button></div></article>
+      `).join('');
+      document.querySelectorAll('button.primary').forEach(btn=>btn.addEventListener('click', ()=>{
+        const cart = JSON.parse(sessionStorage.getItem('cart')||'[]'); const slug = btn.dataset.slug; if(!cart.includes(slug)) cart.push(slug); sessionStorage.setItem('cart', JSON.stringify(cart)); btn.textContent='Ajouté'; btn.disabled=true; 
+      }));
+    })();
+  </script>
+</body>
+</html>

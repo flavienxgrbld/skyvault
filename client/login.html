@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Connexion — Interface client</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-top"><a href="../index.html" class="secondary">← Retour</a></div>
+    <h1>Connexion — Interface client</h1>
+  </header>
+  <main style="max-width:420px;margin:32px auto;padding:20px;">
+    <form class="payment-form" id="loginForm" style="display:grid;gap:12px">
+      <div class="row">
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="client@exemple.com" required>
+      </div>
+      <div class="row">
+        <label for="password">Mot de passe</label>
+        <input id="password" type="password" placeholder="••••••••" required>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <a href="#" style="font-size:13px;color:var(--muted)">Mot de passe oublié ?</a>
+        <button type="submit" class="primary">Se connecter</button>
+      </div>
+      <div id="message" class="message" role="status" aria-live="polite"></div>
+    </form>
+  </main>
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', function(e){
+      e.preventDefault();
+      const msg = document.getElementById('message');
+      msg.style.color='#117a37'; msg.textContent='Connexion simulée — vous serez redirigé.e (prototype).';
+      setTimeout(()=> location.href='../modules.html',700);
+    });
+  </script>
+</body>
+</html>

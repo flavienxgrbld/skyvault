@@ -1,0 +1,49 @@
+[
+  /* Finance */
+  { "slug": "comptabilite", "title": "Comptabilité", "description": "Gestion des comptes et journaux", "price": 20, "path": "modules/finance/comptabilite/index.html" },
+  { "slug": "facturation", "title": "Facturation", "description": "Devis, factures et relances", "price": 15, "path": "modules/finance/facturation/index.html" },
+  { "slug": "notes-de-frais", "title": "Notes de frais", "description": "Saisie et remboursement", "price": 8, "path": "modules/finance/notes-de-frais/index.html" },
+  { "slug": "feuilles-de-calcul", "title": "Feuilles de calcul (BI)", "description": "Tableaux de bord et BI", "price": 0, "path": "modules/finance/feuilles-de-calcul/index.html" },
+  { "slug": "documents", "title": "Documents", "description": "Stockage et archivage", "price": 5, "path": "modules/finance/documents/index.html" },
+  { "slug": "signature", "title": "Signature", "description": "Signature électronique", "price": 7, "path": "modules/finance/signature/index.html" },
+
+  /* Ventes */
+  { "slug": "crm", "title": "CRM", "description": "Gestion de la relation client", "price": 0, "path": "modules/ventes/crm/index.html" },
+  { "slug": "ventes", "title": "Ventes", "description": "Gestion commerciale", "price": 0, "path": "modules/ventes/ventes/index.html" },
+  { "slug": "pdv-boutique", "title": "PdV Boutique", "description": "Point de vente — boutique", "price": 0, "path": "modules/ventes/pdv-boutique/index.html" },
+  { "slug": "pdv-restaurant", "title": "PdV Restaurant", "description": "Point de vente — restaurant", "price": 0, "path": "modules/ventes/pdv-restaurant/index.html" },
+  { "slug": "abonnements", "title": "Abonnements", "description": "Gestion des abonnements", "price": 0, "path": "modules/ventes/abonnements/index.html" },
+  { "slug": "location", "title": "Location", "description": "Gestion de locations", "price": 0, "path": "modules/ventes/location/index.html" },
+
+  /* Communication */
+  { "slug": "blog", "title": "Blog", "description": "Publication d'articles", "price": 0, "path": "modules/communication/blog/index.html" },
+  { "slug": "forum", "title": "Forum", "description": "Discussions communautaires", "price": 0, "path": "modules/communication/forum/index.html" },
+  { "slug": "live-chat", "title": "Live Chat", "description": "Chat en direct", "price": 0, "path": "modules/communication/live-chat/index.html" },
+  { "slug": "e-learning", "title": "eLearning", "description": "Formations en ligne", "price": 0, "path": "modules/communication/e-learning/index.html" },
+
+  /* Chaîne d'approvisionnement */
+  { "slug": "inventaire", "title": "Inventaire", "description": "Stocks et mouvements", "price": 12, "path": "modules/chaine-approvisionnement/inventaire/index.html" },
+  { "slug": "fabrication", "title": "Fabrication", "description": "Gestion de production", "price": 0, "path": "modules/chaine-approvisionnement/fabrication/index.html" },
+  { "slug": "achats", "title": "Achats", "description": "Demandes et fournisseurs", "price": 10, "path": "modules/chaine-approvisionnement/achats/index.html" },
+  { "slug": "maintenance", "title": "Maintenance", "description": "GMAO", "price": 9, "path": "modules/chaine-approvisionnement/maintenance/index.html" },
+  { "slug": "qualite", "title": "Qualité", "description": "Contrôles & audits", "price": 8, "path": "modules/chaine-approvisionnement/qualite/index.html" },
+
+  /* Ressources Humaines */
+  { "slug": "employes", "title": "Employés", "description": "Dossier salarié", "price": 10, "path": "modules/rh/employes/index.html" },
+  { "slug": "recrutement", "title": "Recrutement", "description": "Offres & candidatures", "price": 6, "path": "modules/rh/recrutement/index.html" },
+  { "slug": "conges", "title": "Congés", "description": "Gestion des absences", "price": 5, "path": "modules/rh/conges/index.html" },
+  { "slug": "evaluations", "title": "Évaluations", "description": "Performance", "price": 7, "path": "modules/rh/evaluations/index.html" },
+  { "slug": "recommandations", "title": "Recommandations", "description": "Références & matching", "price": 4, "path": "modules/rh/recommandations/index.html" },
+
+  /* Services */
+  { "slug": "projet", "title": "Projet", "description": "Gestion de projet", "price": 14, "path": "modules/services/projet/index.html" },
+  { "slug": "feuilles-de-temps", "title": "Feuilles de temps", "description": "Temps & activités", "price": 6, "path": "modules/services/feuilles-de-temps/index.html" },
+  { "slug": "assistance", "title": "Assistance", "description": "Ticketing", "price": 8, "path": "modules/services/assistance/index.html" },
+  { "slug": "planification", "title": "Planification", "description": "Calendriers & tâches", "price": 7, "path": "modules/services/planification/index.html" },
+  { "slug": "rendezvous", "title": "Rendez-vous", "description": "Bookings", "price": 5, "path": "modules/services/rendezvous/index.html" },
+
+  /* Productivité */
+  { "slug": "discussion", "title": "Discussion", "description": "Chat interne", "price": 4, "path": "modules/productivite/discussion/index.html" },
+  { "slug": "validations", "title": "Validations", "description": "Workflows", "price": 6, "path": "modules/productivite/validations/index.html" },
+  { "slug": "base-de-connaissances", "title": "Connaissances", "description": "Docs & FAQ", "price": 5, "path": "modules/productivite/base-de-connaissances/index.html" }
+]

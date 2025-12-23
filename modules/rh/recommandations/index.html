@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Module — Recommandations</title>
+  <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-top"><a href="../ressources-humaines/index.html" class="secondary">← Retour à la suite RH</a></div>
+    <h1>Recommandations</h1>
+    <p>Références & matching — prototype d'exemples.</p>
+  </header>
+  <main class="container">
+    <section style="padding:20px;background:var(--surface);border-radius:8px;">
+      <h2>Recommandations</h2>
+      <ul id="recoList" style="margin-top:12px;padding:0;list-style:none"></ul>
+      <p style="margin-top:12px"><a href="../ressources-humaines/index.html" class="secondary">← Retour à la suite RH</a></p>
+    </section>
+
+    <script>
+      (function(){
+        const recos = [{from:'Alice',note:'Très bon collaborateur'},{from:'Bob',note:'Réactif et professionnel'}];
+        const list = document.getElementById('recoList');
+        function render(){ list.innerHTML = recos.map(r=>`<li style="padding:8px;border-bottom:1px solid var(--border)"><strong>${r.from}</strong><div class=\"muted\">${r.note}</div></li>`).join(''); }
+        render();
+      })();
+    </script>
+  </main>
+</body>
+</html>

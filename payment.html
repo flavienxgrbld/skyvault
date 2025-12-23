@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Paiement — SkyVault</title>
+  <link rel="stylesheet" href="style.css">
+  <meta name="description" content="Page de paiement - SkyVault">
+</head>
+<body>
+  <header class="site-header">
+    <h1>SkyVault</h1>
+  </header>
+
+  <main class="payment-page">
+    <h1>Payer votre commande</h1>
+
+    <form id="payment-form" class="payment-form" novalidate>
+      <div class="row">
+        <label for="fullName">Nom complet</label>
+        <input id="fullName" name="fullName" type="text" required placeholder="Jean Dupont">
+      </div>
+
+      <div class="row">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required placeholder="jean@exemple.com">
+      </div>
+
+      <div class="row">
+        <label for="amount">Montant (EUR)</label>
+        <!-- Champ en lecture seule : le montant est calculé et ne doit pas être modifiable côté client -->
+        <input id="amount" name="amount" type="number" min="0" step="0.01" required value="9.99" readonly aria-readonly="true" title="Montant fixé">
+        <!-- Valeur en centimes pour envoi serveur et vérification (hidden) -->
+        <input id="amount_cents" name="amount_cents" type="hidden" value="999">
+      </div>
+
+      <fieldset class="card-group">
+        <legend>Détails de la carte (simulation)</legend>
+
+        <div class="row">
+          <label for="cardNumber">Numéro de carte</label>
+          <input id="cardNumber" name="cardNumber" type="text" inputmode="numeric" placeholder="4242 4242 4242 4242" required>
+        </div>
+
+        <div class="two-cols">
+          <div class="row">
+            <label for="expDate">MM/AA</label>
+            <input id="expDate" name="expDate" type="text" placeholder="12/25" required>
+          </div>
+          <div class="row">
+            <label for="cvc">CVC</label>
+            <input id="cvc" name="cvc" type="text" inputmode="numeric" placeholder="123" required>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <button type="submit" id="payBtn">Payer</button>
+      </div>
+
+      <div id="message" role="status" aria-live="polite" class="message"></div>
+    </form>
+
+    <section id="selected-items" class="selected-items" hidden>
+      <h2>Modules sélectionnés</h2>
+      <ul id="itemsList"></ul>
+    </section>
+
+    <section class="note">
+      <h2>Note</h2>
+      <p>Il s'agit d'une page de paiement de démonstration. Pour accepter de véritables paiements, suivez l'intégration avec un prestataire comme <strong>Stripe</strong> ou <strong>PayPal</strong> (clé publique, serveur sécurisé et webhooks).</p>
+    </section>
+  </main>
+
+  <footer style="text-align:center;padding:28px 12px;color:var(--muted);border-top:1px solid var(--border)">© <span id="year"></span> SkyVault</footer>
+  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+  <script src="payment.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Module — Congés</title>
+  <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-top"><a href="../ressources-humaines/index.html" class="secondary">← Retour à la suite RH</a></div>
+    <h1>Congés</h1>
+    <p>Gestion des demandes d'absence.</p>
+  </header>
+  <main class="container">
+    <section style="padding:20px;background:var(--surface);border-radius:8px;">
+      <h2>Demandes</h2>
+      <button id="reqLeave" class="primary">Demander un congé</button>
+      <ul id="leavesList" style="margin-top:12px;padding:0;list-style:none"></ul>
+      <p style="margin-top:12px"><a href="../ressources-humaines/index.html" class="secondary">← Retour à la suite RH</a></p>
+    </section>
+
+    <script>
+      (function(){
+        const leaves = [{name:'Alice',from:'2025-01-10',to:'2025-01-15'}];
+        const list = document.getElementById('leavesList');
+        function render(){ list.innerHTML = leaves.map(l=>`<li style="padding:8px;border-bottom:1px solid var(--border)"><strong>${l.name}</strong><div class=\"muted\">${l.from} → ${l.to}</div></li>`).join(''); }
+        document.getElementById('reqLeave').addEventListener('click', ()=>{ const name=prompt('Votre nom'); const from=prompt('Date de début (YYYY-MM-DD)'); const to=prompt('Date de fin (YYYY-MM-DD)'); if(name && from && to) { leaves.push({name,from,to}); render(); } });
+        render();
+      })();
+    </script>
+  </main>
+</body>
+</html>

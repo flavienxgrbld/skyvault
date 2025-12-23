@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Module — Évaluations</title>
+  <link rel="stylesheet" href="../../../style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-top"><a href="../ressources-humaines/index.html" class="secondary">← Retour à la suite RH</a></div>
+    <h1>Évaluations</h1>
+    <p>Processus d'évaluation de la performance.</p>
+  </header>
+  <main class="container">
+    <section style="padding:20px;background:var(--surface);border-radius:8px;">
+      <h2>Évaluations</h2>
+      <button id="newEval" class="primary">Nouvelle évaluation</button>
+      <ul id="evalsList" style="margin-top:12px;padding:0;list-style:none"></ul>
+      <p style="margin-top:12px"><a href="../ressources-humaines/index.html" class="secondary">← Retour à la suite RH</a></p>
+    </section>
+
+    <script>
+      (function(){
+        const evals = [{title:'Entretien 2025 - Alice'},{title:'Entretien 2025 - Bob'}];
+        const list = document.getElementById('evalsList');
+        function render(){ list.innerHTML = evals.map(e=>`<li style="padding:8px;border-bottom:1px solid var(--border)"><strong>${e.title}</strong></li>`).join(''); }
+        document.getElementById('newEval').addEventListener('click', ()=>{ const t=prompt('Titre de l\'évaluation'); if(t){ evals.push({title:t}); render(); } });
+        render();
+      })();
+    </script>
+  </main>
+</body>
+</html>
