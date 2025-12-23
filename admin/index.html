@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Administration — SkyVault</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="admin-layout">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <div class="admin-brand">
+        <h1>SkyVault</h1>
+        <span class="admin-badge">Admin</span>
+      </div>
+      <nav class="admin-nav">
+        <a href="#dashboard" class="admin-nav-item active" data-section="dashboard">
+          <span class="nav-icon">📊</span>
+          <span>Tableau de bord</span>
+        </a>
+        <a href="#modules" class="admin-nav-item" data-section="modules">
+          <span class="nav-icon">📦</span>
+          <span>Modules</span>
+        </a>
+        <a href="#orders" class="admin-nav-item" data-section="orders">
+          <span class="nav-icon">💳</span>
+          <span>Commandes</span>
+        </a>
+        <a href="#users" class="admin-nav-item" data-section="users">
+          <span class="nav-icon">👥</span>
+          <span>Utilisateurs</span>
+        </a>
+        <a href="#settings" class="admin-nav-item" data-section="settings">
+          <span class="nav-icon">⚙️</span>
+          <span>Paramètres</span>
+        </a>
+      </nav>
+      <div class="admin-sidebar-footer">
+        <a href="../index.html" class="btn-logout">← Retour au site</a>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="admin-main">
+      <header class="admin-header">
+        <h2 id="pageTitle">Tableau de bord</h2>
+        <div class="admin-user">
+          <span>Admin</span>
+          <button class="btn-user">👤</button>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <!-- Dashboard Section -->
+        <section id="section-dashboard" class="admin-section active">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Modules actifs</div>
+              <div class="stat-value" id="statsModules">0</div>
+              <div class="stat-trend">+0 ce mois</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Commandes</div>
+              <div class="stat-value" id="statsOrders">0</div>
+              <div class="stat-trend">+0 cette semaine</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Utilisateurs</div>
+              <div class="stat-value" id="statsUsers">0</div>
+              <div class="stat-trend">+0 ce mois</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Revenu mensuel</div>
+              <div class="stat-value" id="statsRevenue">0€</div>
+              <div class="stat-trend">+0% vs mois dernier</div>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <div class="dashboard-card">
+              <h3>Dernières commandes</h3>
+              <div id="recentOrders" class="recent-list"></div>
+            </div>
+            <div class="dashboard-card">
+              <h3>Activité récente</h3>
+              <div id="recentActivity" class="recent-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Modules Section -->
+        <section id="section-modules" class="admin-section">
+          <div class="section-actions">
+            <button class="btn-primary" id="btnAddModule">+ Ajouter un module</button>
+            <input type="search" id="searchModules" placeholder="Rechercher un module..." class="search-input">
+          </div>
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Catégorie</th>
+                  <th>Prix HT</th>
+                  <th>Statut</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="modulesTableBody">
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Orders Section -->
+        <section id="section-orders" class="admin-section">
+          <div class="section-actions">
+            <select id="filterOrderStatus" class="filter-select">
+              <option value="">Tous les statuts</option>
+              <option value="pending">En attente</option>
+              <option value="completed">Complétée</option>
+              <option value="cancelled">Annulée</option>
+            </select>
+          </div>
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Client</th>
+                  <th>Modules</th>
+                  <th>Montant</th>
+                  <th>Date</th>
+                  <th>Statut</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody">
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Users Section -->
+        <section id="section-users" class="admin-section">
+          <div class="section-actions">
+            <button class="btn-primary" id="btnAddUser">+ Ajouter un utilisateur</button>
+            <input type="search" id="searchUsers" placeholder="Rechercher un utilisateur..." class="search-input">
+          </div>
+          <div class="table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Email</th>
+                  <th>Modules actifs</th>
+                  <th>Inscription</th>
+                  <th>Statut</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="section-settings" class="admin-section">
+          <div class="settings-grid">
+            <div class="settings-card">
+              <h3>Paramètres généraux</h3>
+              <div class="form-group">
+                <label>Nom du site</label>
+                <input type="text" value="SkyVault" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Email de contact</label>
+                <input type="email" value="contact@skyvault.com" class="form-input">
+              </div>
+              <div class="form-group">
+                <label>TVA (%)</label>
+                <input type="number" value="20" class="form-input">
+              </div>
+              <button class="btn-primary">Enregistrer</button>
+            </div>
+
+            <div class="settings-card">
+              <h3>Paiement</h3>
+              <div class="form-group">
+                <label>Clé API Stripe</label>
+                <input type="password" placeholder="sk_test_..." class="form-input">
+              </div>
+              <div class="form-group">
+                <label>Mode de paiement</label>
+                <select class="form-input">
+                  <option>Test</option>
+                  <option>Production</option>
+                </select>
+              </div>
+              <button class="btn-primary">Enregistrer</button>
+            </div>
+
+            <div class="settings-card">
+              <h3>Notifications</h3>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" checked>
+                  <span>Notifications par email</span>
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox" checked>
+                  <span>Alertes nouvelles commandes</span>
+                </label>
+              </div>
+              <div class="form-group">
+                <label class="checkbox-label">
+                  <input type="checkbox">
+                  <span>Rapport hebdomadaire</span>
+                </label>
+              </div>
+              <button class="btn-primary">Enregistrer</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal Add/Edit Module -->
+  <div id="modalModule" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalModuleTitle">Ajouter un module</h3>
+        <button class="btn-close" onclick="closeModal('modalModule')">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="formModule">
+          <div class="form-group">
+            <label>Nom du module *</label>
+            <input type="text" id="moduleName" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Slug *</label>
+            <input type="text" id="moduleSlug" required class="form-input">
+          </div>
+          <div class="form-group">
+            <label>Description *</label>
+            <textarea id="moduleDescription" rows="3" required class="form-input"></textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Catégorie *</label>
+              <select id="moduleCategory" required class="form-input">
+                <option value="finance">Finance</option>
+                <option value="ventes">Ventes</option>
+                <option value="communication">Communication</option>
+                <option value="chaine-approvisionnement">Chaîne approvisionnement</option>
+                <option value="rh">RH</option>
+                <option value="services">Services</option>
+                <option value="productivite">Productivité</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Prix HT (€) *</label>
+              <input type="number" id="modulePrice" required min="0" step="0.01" class="form-input">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Chemin *</label>
+            <input type="text" id="modulePath" required class="form-input" placeholder="modules/finance/comptabilite/">
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" onclick="closeModal('modalModule')">Annuler</button>
+            <button type="submit" class="btn-primary">Enregistrer</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
