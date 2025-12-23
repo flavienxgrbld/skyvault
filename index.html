@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SkyVault — Plateforme Modulaire</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <h1>SkyVault</h1>
+    <p>Plateforme modulaire pour entreprises — choisissez uniquement ce dont vous avez besoin.</p>
+  </header>
+  <main style="max-width:900px;margin:48px auto;padding:0 20px;">
+    <section style="display:flex;gap:20px;align-items:center;justify-content:space-between;">
+      <div>
+        <h2 style="margin:0 0 8px;font-size:20px;color:var(--ink)">Commencez</h2>
+        <p style="margin:0;color:var(--muted)">Accédez à la page de sélection des modules pour configurer votre abonnement.</p>
+      </div>
+      <div>
+        <a href="modules.html" class="primary" style="text-decoration:none;display:inline-block;padding:10px 14px;border-radius:8px;">Choisir mes modules</a>
+      </div>
+    </section>
+
+    <section style="margin-top:36px;border-top:1px solid var(--border);padding-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div>
+        <h3 style="margin:0 0 8px;color:var(--accent)">Pourquoi SkyVault ?</h3>
+        <ul style="margin:0;padding-left:18px;color:var(--muted)">
+          <li>Configuration modulaire et facturation claire</li>
+          <li>Mise en place rapide — pas d'installation lourde</li>
+          <li>Sécurité et conformité pour entreprises</li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="margin:0 0 8px;color:var(--accent)">Pour le MVP</h3>
+        <p style="margin:0;color:var(--muted)">Nous commençons par les modules essentiels et ajoutons d'autres fonctionnalités après retours utilisateurs.</p>
+      </div>
+    </section>
+  </main>
+  <footer style="text-align:center;padding:28px 12px;color:var(--muted);border-top:1px solid var(--border)">© <span id="year"></span> SkyVault</footer>
+  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+</body>
+</html>
