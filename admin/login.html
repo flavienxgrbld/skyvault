@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Connexion Admin — SkyVault</title>
+  <link rel="stylesheet" href="../style.css">
+  <style>
+    body { background: var(--bg); display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+    .login-container { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 40px; max-width: 400px; width: 100%; box-shadow: 0 4px 24px rgba(0,0,0,0.1); }
+    .login-header { text-align: center; margin-bottom: 32px; }
+    .login-header h1 { margin: 0 0 8px; font-size: 32px; font-weight: 700; color: var(--accent); font-family: 'Georgia', serif; }
+    .login-header p { margin: 0; color: var(--muted); font-size: 14px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--ink); font-size: 14px; }
+    .form-group input { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--ink); font-size: 14px; }
+    .form-group input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(201,165,90,0.1); }
+    .btn-login { width: 100%; padding: 14px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
+    .btn-login:hover { background: #b8955a; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(201,165,90,0.3); }
+    .error-msg { background: rgba(239,68,68,0.1); color: #ef4444; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; display: none; }
+    .error-msg.show { display: block; }
+    .back-link { text-align: center; margin-top: 20px; }
+    .back-link a { color: var(--muted); text-decoration: none; font-size: 14px; }
+    .back-link a:hover { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-header">
+      <h1>SkyVault</h1>
+      <p>Administration</p>
+    </div>
+    
+    <div id="errorMsg" class="error-msg"></div>
+    
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required autocomplete="username" value="admin@localhost">
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password" value="admin">
+      </div>
+      
+      <button type="submit" class="btn-login">Se connecter</button>
+    </form>
+    
+    <div class="back-link">
+      <a href="../index.html">← Retour au site</a>
+    </div>
+  </div>
+
+  <script>
+    const loginForm = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.classList.remove('show');
+      
+      const formData = new FormData(loginForm);
+      
+      try {
+        const response = await fetch('../server/php/auth.php', {
+          method: 'POST',
+          body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          window.location.href = 'index.php';
+        } else {
+          errorMsg.textContent = result.message || 'Identifiants incorrects';
+          errorMsg.classList.add('show');
+        }
+      } catch (error) {
+        errorMsg.textContent = 'Erreur de connexion';
+        errorMsg.classList.add('show');
+      }
+    });
+  </script>
+</body>
+</html>
