@@ -7,6 +7,7 @@ $stats = [
     'modules' => 0,
     'orders' => 0,
     'users' => 0,
+    'admins' => 0,
     'revenue' => 0
 ];
 
@@ -16,6 +17,10 @@ try {
     // Compter les utilisateurs
     $stmt = $pdo->query('SELECT COUNT(*) as count FROM users');
     $stats['users'] = (int) $stmt->fetch()['count'];
+    
+    // Compter les administrateurs
+    $stmt = $pdo->query('SELECT COUNT(*) as count FROM admins');
+    $stats['admins'] = (int) $stmt->fetch()['count'];
     
     // Compter les modules
     $stmt = $pdo->query('SELECT COUNT(*) as count FROM modules WHERE active = 1');
