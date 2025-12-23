@@ -1,5 +1,5 @@
 <?php
-$pageTitle = '⚙️ Paramètres';
+$pageTitle = 'Paramètres';
 include 'header.php';
 ?>
 

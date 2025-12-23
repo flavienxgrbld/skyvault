@@ -1,5 +1,5 @@
 <?php
-$pageTitle = '🔐 Administrateurs';
+$pageTitle = 'Administrateurs';
 include 'header.php';
 ?>
 

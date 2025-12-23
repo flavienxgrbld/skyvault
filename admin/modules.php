@@ -1,5 +1,5 @@
 <?php
-$pageTitle = '📦 Modules';
+$pageTitle = 'Modules';
 include 'header.php';
 ?>
 

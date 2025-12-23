@@ -1,5 +1,5 @@
 <?php
-$pageTitle = '📊 Tableau de bord';
+$pageTitle = 'Tableau de bord';
 include 'header.php';
 ?>
 
@@ -57,7 +57,7 @@ async function loadStats() {
 }
 
 // Vérifier le statut de la base
-async function checkDatabaseStatus() {
+async function checkDatabaseStatusDetail() {
   try {
     const response = await fetch('../server/php/db-status.php');
     const data = await response.json();
@@ -68,11 +68,11 @@ async function checkDatabaseStatus() {
     if (data.connected) {
       statusValue.innerHTML = '✅ Connectée';
       dbDetails.textContent = `MySQL ${data.version || ''}`;
-      dbCard.classList.add('success');
+      dbCard.style.borderLeftColor = '#10b981';
     } else {
       statusValue.innerHTML = '❌ Déconnectée';
       dbDetails.textContent = data.error || 'Erreur de connexion';
-      dbCard.classList.add('error');
+      dbCard.style.borderLeftColor = '#ef4444';
     }
   } catch (error) {
     document.getElementById('dbStatusValue').innerHTML = '⚠️ Erreur';
@@ -82,12 +82,12 @@ async function checkDatabaseStatus() {
 
 // Charger au démarrage
 loadStats();
-checkDatabaseStatus();
+checkDatabaseStatusDetail();
 
 // Actualiser toutes les 30 secondes
 setInterval(() => {
   loadStats();
-  checkDatabaseStatus();
+  checkDatabaseStatusDetail();
 }, 30000);
 </script>
 

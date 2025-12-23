@@ -1,5 +1,5 @@
 <?php
-$pageTitle = '👥 Utilisateurs';
+$pageTitle = 'Utilisateurs';
 include 'header.php';
 ?>
 

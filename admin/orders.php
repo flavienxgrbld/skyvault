@@ -1,5 +1,5 @@
 <?php
-$pageTitle = '💳 Commandes';
+$pageTitle = 'Commandes';
 include 'header.php';
 ?>
 
