@@ -103,7 +103,7 @@ body{margin:0;font-family:'Georgia','Times New Roman',serif;background:var(--bg)
 .module-card:has(input:checked){border-color:var(--accent);background:linear-gradient(135deg,rgba(201,165,90,0.15) 0%,rgba(201,165,90,0.05) 100%);box-shadow:0 0 32px rgba(201,165,90,0.3)}
 
 /* Selected items in sidebar */
-.selected-modules .selected-item{padding:12px;margin-bottom:8px;background:#f8fafc;border-radius:8px;font-size:13px;border-left:3px solid var(--accent)}
+.selected-modules .selected-item{padding:12px;margin-bottom:8px;background:var(--surface);border-radius:8px;font-size:13px;border:1px solid var(--border);border-left:3px solid var(--accent)}
 .selected-item-name{font-weight:600;color:var(--ink);display:block;margin-bottom:2px}
 .selected-item-price{color:var(--muted);font-size:12px}
 

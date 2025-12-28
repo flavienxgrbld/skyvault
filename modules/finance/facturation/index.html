@@ -1,24 +1,904 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Module — Facturation</title>
-  <link rel="stylesheet" href="../../../style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Facturation - SkyVault</title>
+  <link rel="stylesheet" href="/style.css">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    
+    .app-layout { display: flex; height: 100vh; overflow: hidden; }
+    
+    /* Sidebar */
+    .sidebar { width: 240px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
+    .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); }
+    .sidebar-header h1 { font-size: 20px; font-weight: 700; color: var(--accent); }
+    .sidebar-header p { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .sidebar-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: var(--ink); text-decoration: none; transition: background 0.15s; cursor: pointer; border-left: 3px solid transparent; }
+    .nav-item:hover { background: rgba(201, 165, 90, 0.1); }
+    .nav-item.active { background: rgba(201, 165, 90, 0.15); border-left-color: var(--accent); font-weight: 600; }
+    .nav-icon { font-size: 18px; opacity: 0.8; }
+    
+    /* Main content */
+    .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+    .topbar h2 { font-size: 22px; font-weight: 700; }
+    .topbar-actions { display: flex; gap: 12px; }
+    
+    .content-area { flex: 1; overflow-y: auto; padding: 24px; }
+    
+    /* Stats cards */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 28px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    .stat-label { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .stat-value { font-size: 32px; font-weight: 700; color: var(--accent); }
+    .stat-meta { font-size: 12px; color: var(--muted); margin-top: 8px; }
+    
+    /* Filters */
+    .filters { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 20px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .search-box { flex: 1; min-width: 200px; }
+    .search-box input { width: 100%; padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--ink); font-size: 14px; }
+    .filter-select { padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--ink); font-size: 14px; cursor: pointer; }
+    
+    /* Table */
+    .data-table { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: rgba(201, 165, 90, 0.1); }
+    th { text-align: left; padding: 14px 16px; font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
+    tbody tr:hover { background: rgba(201, 165, 90, 0.05); }
+    td { padding: 14px 16px; font-size: 14px; }
+    
+    /* Status badges */
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+    .badge-draft { background: #475569; color: #e2e8f0; }
+    .badge-sent { background: #0ea5e9; color: white; }
+    .badge-paid { background: #10b981; color: white; }
+    .badge-overdue { background: #ef4444; color: white; }
+    .badge-cancelled { background: #64748b; color: white; }
+    
+    /* Buttons */
+    .btn { padding: 10px 18px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-block; }
+    .btn-primary { background: var(--accent); color: #000; }
+    .btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(201, 165, 90, 0.3); }
+    .btn-secondary { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: rgba(255, 255, 255, 0.05); }
+    .btn-ghost { background: transparent; color: var(--accent); padding: 6px 12px; }
+    .btn-ghost:hover { background: rgba(201, 165, 90, 0.1); }
+    .btn-small { padding: 6px 12px; font-size: 13px; }
+    
+    /* Action buttons in table */
+    .action-btns { display: flex; gap: 8px; }
+    
+    /* Modal */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); z-index: 1000; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    .modal-overlay.active { display: flex; }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; width: 90%; max-width: 900px; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5); }
+    .modal-header { padding: 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h3 { font-size: 20px; font-weight: 700; }
+    .modal-close { background: transparent; border: none; color: var(--muted); font-size: 24px; cursor: pointer; padding: 0; width: 32px; height: 32px; border-radius: 6px; transition: all 0.15s; }
+    .modal-close:hover { background: rgba(255, 255, 255, 0.1); color: var(--ink); }
+    .modal-body { padding: 24px; }
+    .modal-footer { padding: 24px; border-top: 1px solid var(--border); display: flex; gap: 12px; justify-content: flex-end; }
+    
+    /* Form */
+    .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group.full-width { grid-column: 1 / -1; }
+    .form-label { font-size: 13px; font-weight: 600; color: var(--ink); }
+    .form-input, .form-select, .form-textarea { padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--ink); font-size: 14px; font-family: inherit; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent); }
+    .form-textarea { resize: vertical; min-height: 80px; }
+    
+    /* Invoice items table */
+    .items-table { margin-top: 20px; }
+    .items-table table { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; }
+    .items-table td input { width: 100%; background: transparent; border: none; color: var(--ink); padding: 8px; }
+    .items-table td input:focus { outline: none; background: rgba(201, 165, 90, 0.1); }
+    .item-total { text-align: right; font-weight: 600; color: var(--accent); }
+    
+    /* Invoice totals */
+    .invoice-totals { margin-top: 20px; display: flex; justify-content: flex-end; }
+    .totals-box { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; min-width: 300px; }
+    .total-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; }
+    .total-row.grand { border-top: 2px solid var(--border); margin-top: 8px; padding-top: 12px; font-size: 18px; font-weight: 700; color: var(--accent); }
+    
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--muted); }
+    .empty-state-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.5; }
+    
+    /* Loading */
+    .loading { text-align: center; padding: 40px; color: var(--muted); }
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-top"><a href="../../../modules.html" class="secondary">← Retour à la sélection</a></div>
-    <h1>Facturation</h1>
-    <p>Devis, factures et relances.</p>
-  </header>
-  <main class="container">
-    <section style="padding:20px;background:var(--surface);border-radius:8px;">
-      <h2>Aperçu</h2>
-      <p>Ce module permet de créer et suivre des factures, d'automatiser les relances et d'exporter au format comptable.</p>
-      <p><strong>Prix :</strong> 15€/mois</p>
-      <p><a href="../../../modules.html" class="primary">Retour</a></p>
-    </section>
-  </main>
+  <div class="app-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>💼 Facturation</h1>
+        <p>Gestion complète</p>
+      </div>
+      <nav class="sidebar-nav">
+        <a class="nav-item active" data-view="invoices">
+          <span class="nav-icon">📄</span>
+          <span>Factures</span>
+        </a>
+        <a class="nav-item" data-view="clients">
+          <span class="nav-icon">👥</span>
+          <span>Clients</span>
+        </a>
+        <a class="nav-item" data-view="products">
+          <span class="nav-icon">📦</span>
+          <span>Produits/Services</span>
+        </a>
+        <a class="nav-item" data-view="stats">
+          <span class="nav-icon">📊</span>
+          <span>Statistiques</span>
+        </a>
+      </nav>
+      <div style="padding: 20px; border-top: 1px solid var(--border);">
+        <a href="/modules.html" class="btn btn-secondary" style="width: 100%; text-align: center;">← Retour modules</a>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="main-content">
+      <div class="topbar">
+        <h2 id="viewTitle">Factures</h2>
+        <div class="topbar-actions">
+          <button class="btn btn-primary" id="btnNewInvoice">+ Nouvelle facture</button>
+        </div>
+      </div>
+      
+      <div class="content-area">
+        <!-- Stats (shown on invoices view) -->
+        <div id="statsSection" class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total factures</div>
+            <div class="stat-value" id="statTotalInvoices">-</div>
+            <div class="stat-meta">Toutes factures</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">En attente</div>
+            <div class="stat-value" id="statPendingAmount">-</div>
+            <div class="stat-meta">Factures envoyées</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Payé ce mois</div>
+            <div class="stat-value" id="statMonthlyRevenue">-</div>
+            <div class="stat-meta">Chiffre d'affaires</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Clients actifs</div>
+            <div class="stat-value" id="statTotalClients">-</div>
+            <div class="stat-meta">Base clients</div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+          <div class="search-box">
+            <input type="text" id="searchInput" placeholder="🔍 Rechercher par numéro ou client...">
+          </div>
+          <select class="filter-select" id="statusFilter">
+            <option value="">Tous les statuts</option>
+            <option value="draft">Brouillon</option>
+            <option value="sent">Envoyé</option>
+            <option value="paid">Payé</option>
+            <option value="overdue">En retard</option>
+            <option value="cancelled">Annulé</option>
+          </select>
+        </div>
+
+        <!-- Invoices table -->
+        <div id="invoicesView" class="data-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Numéro</th>
+                <th>Client</th>
+                <th>Date</th>
+                <th>Échéance</th>
+                <th>Montant TTC</th>
+                <th>Statut</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="invoicesTableBody">
+              <tr><td colspan="7" class="loading">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Clients view -->
+        <div id="clientsView" style="display: none;">
+          <div class="data-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Email</th>
+                  <th>Téléphone</th>
+                  <th>Ville</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="clientsTableBody">
+                <tr><td colspan="5" class="loading">Chargement...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Products view -->
+        <div id="productsView" style="display: none;">
+          <div class="data-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nom</th>
+                  <th>Type</th>
+                  <th>Prix HT</th>
+                  <th>TVA</th>
+                  <th>Référence</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productsTableBody">
+                <tr><td colspan="6" class="loading">Chargement...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: New/Edit Invoice -->
+  <div class="modal-overlay" id="invoiceModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="invoiceModalTitle">Nouvelle facture</h3>
+        <button class="modal-close" onclick="closeInvoiceModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="invoiceForm">
+          <input type="hidden" id="invoiceId">
+          
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Client *</label>
+              <select class="form-select" id="invoiceClient" required>
+                <option value="">Sélectionner un client</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Statut</label>
+              <select class="form-select" id="invoiceStatus">
+                <option value="draft">Brouillon</option>
+                <option value="sent">Envoyé</option>
+                <option value="paid">Payé</option>
+                <option value="cancelled">Annulé</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Date d'émission</label>
+              <input type="date" class="form-input" id="invoiceDate" required>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Date d'échéance</label>
+              <input type="date" class="form-input" id="invoiceDueDate" required>
+            </div>
+            
+            <div class="form-group full-width">
+              <label class="form-label">Notes</label>
+              <textarea class="form-textarea" id="invoiceNotes" placeholder="Notes internes..."></textarea>
+            </div>
+            
+            <div class="form-group full-width">
+              <label class="form-label">Conditions de paiement</label>
+              <textarea class="form-textarea" id="invoicePaymentTerms" placeholder="Paiement sous 30 jours..."></textarea>
+            </div>
+          </div>
+
+          <div class="items-table">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h4>Lignes de facture</h4>
+              <button type="button" class="btn btn-ghost btn-small" onclick="addInvoiceItem()">+ Ajouter ligne</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 40%;">Description</th>
+                  <th style="width: 12%;">Qté</th>
+                  <th style="width: 18%;">Prix HT</th>
+                  <th style="width: 12%;">TVA %</th>
+                  <th style="width: 15%;">Total HT</th>
+                  <th style="width: 3%;"></th>
+                </tr>
+              </thead>
+              <tbody id="invoiceItemsBody">
+                <!-- Items will be added here -->
+              </tbody>
+            </table>
+          </div>
+
+          <div class="invoice-totals">
+            <div class="totals-box">
+              <div class="total-row">
+                <span>Sous-total HT:</span>
+                <span id="subtotalDisplay">0.00 €</span>
+              </div>
+              <div class="total-row">
+                <span>TVA:</span>
+                <span id="taxDisplay">0.00 €</span>
+              </div>
+              <div class="total-row grand">
+                <span>Total TTC:</span>
+                <span id="totalDisplay">0.00 €</span>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeInvoiceModal()">Annuler</button>
+        <button type="button" class="btn btn-primary" onclick="saveInvoice()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: New/Edit Client -->
+  <div class="modal-overlay" id="clientModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="clientModalTitle">Nouveau client</h3>
+        <button class="modal-close" onclick="closeClientModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <form id="clientForm">
+          <input type="hidden" id="clientId">
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label class="form-label">Nom *</label>
+              <input type="text" class="form-input" id="clientName" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" id="clientEmail">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Téléphone</label>
+              <input type="text" class="form-input" id="clientPhone">
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Adresse</label>
+              <input type="text" class="form-input" id="clientAddress">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Ville</label>
+              <input type="text" class="form-input" id="clientCity">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Code postal</label>
+              <input type="text" class="form-input" id="clientPostalCode">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pays</label>
+              <input type="text" class="form-input" id="clientCountry" value="France">
+            </div>
+            <div class="form-group">
+              <label class="form-label">SIRET</label>
+              <input type="text" class="form-input" id="clientSiret">
+            </div>
+            <div class="form-group full-width">
+              <label class="form-label">Notes</label>
+              <textarea class="form-textarea" id="clientNotes"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeClientModal()">Annuler</button>
+        <button type="button" class="btn btn-primary" onclick="saveClient()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Configuration
+    const API_URL = '/server/php/invoices.php';
+    
+    // State
+    let invoices = [];
+    let clients = [];
+    let products = [];
+    let currentView = 'invoices';
+    let editingInvoiceId = null;
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      loadData();
+      setupEventListeners();
+      setTodayDates();
+    });
+
+    function setupEventListeners() {
+      // Navigation
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const view = item.dataset.view;
+          switchView(view);
+        });
+      });
+
+      // New invoice button
+      document.getElementById('btnNewInvoice').addEventListener('click', () => {
+        openInvoiceModal();
+      });
+
+      // Search and filter
+      document.getElementById('searchInput').addEventListener('input', filterInvoices);
+      document.getElementById('statusFilter').addEventListener('change', filterInvoices);
+    }
+
+    function setTodayDates() {
+      const today = new Date().toISOString().split('T')[0];
+      const dueDate = new Date();
+      dueDate.setDate(dueDate.getDate() + 30);
+      document.getElementById('invoiceDate').value = today;
+      document.getElementById('invoiceDueDate').value = dueDate.toISOString().split('T')[0];
+    }
+
+    // API calls
+    async function loadData() {
+      try {
+        const [invoicesRes, clientsRes, productsRes, statsRes] = await Promise.all([
+          fetch(`${API_URL}/invoices`),
+          fetch(`${API_URL}/clients`),
+          fetch(`${API_URL}/products`),
+          fetch(`${API_URL}/stats`)
+        ]);
+        
+        invoices = await invoicesRes.json();
+        clients = await clientsRes.json();
+        products = await productsRes.json();
+        const stats = await statsRes.json();
+        
+        renderInvoices();
+        renderClients();
+        renderProducts();
+        updateStats(stats);
+        populateClientSelect();
+      } catch (error) {
+        console.error('Error loading data:', error);
+        alert('Erreur de chargement des données. Vérifiez la connexion à la base de données.');
+      }
+    }
+
+    function updateStats(stats) {
+      const totalCount = invoices.length;
+      const pendingAmount = stats.by_status.find(s => s.status === 'sent')?.sum || 0;
+      const monthlyRevenue = stats.monthly_revenue || 0;
+      const totalClients = stats.total_clients || 0;
+
+      document.getElementById('statTotalInvoices').textContent = totalCount;
+      document.getElementById('statPendingAmount').textContent = `${pendingAmount.toFixed(2)} €`;
+      document.getElementById('statMonthlyRevenue').textContent = `${parseFloat(monthlyRevenue).toFixed(2)} €`;
+      document.getElementById('statTotalClients').textContent = totalClients;
+    }
+
+    // Rendering
+    function renderInvoices() {
+      const tbody = document.getElementById('invoicesTableBody');
+      
+      if (invoices.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="empty-state"><div class="empty-state-icon">📄</div><div>Aucune facture</div></td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = invoices.map(inv => `
+        <tr>
+          <td><strong>${inv.invoice_number}</strong></td>
+          <td>${inv.client_name}</td>
+          <td>${formatDate(inv.issue_date)}</td>
+          <td>${formatDate(inv.due_date)}</td>
+          <td><strong>${parseFloat(inv.total).toFixed(2)} €</strong></td>
+          <td><span class="badge badge-${inv.status}">${getStatusLabel(inv.status)}</span></td>
+          <td>
+            <div class="action-btns">
+              <button class="btn btn-ghost btn-small" onclick="viewInvoice(${inv.id})">👁️ Voir</button>
+              <button class="btn btn-ghost btn-small" onclick="editInvoice(${inv.id})">✏️</button>
+              <button class="btn btn-ghost btn-small" onclick="deleteInvoice(${inv.id})" style="color: #ef4444;">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderClients() {
+      const tbody = document.getElementById('clientsTableBody');
+      
+      if (clients.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state"><div class="empty-state-icon">👥</div><div>Aucun client</div></td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = clients.map(c => `
+        <tr>
+          <td><strong>${c.name}</strong></td>
+          <td>${c.email || '-'}</td>
+          <td>${c.phone || '-'}</td>
+          <td>${c.city || '-'}</td>
+          <td>
+            <div class="action-btns">
+              <button class="btn btn-ghost btn-small" onclick="editClient(${c.id})">✏️ Modifier</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderProducts() {
+      const tbody = document.getElementById('productsTableBody');
+      
+      if (products.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="empty-state"><div class="empty-state-icon">📦</div><div>Aucun produit</div></td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = products.map(p => `
+        <tr>
+          <td><strong>${p.name}</strong></td>
+          <td>${p.type === 'product' ? 'Produit' : 'Service'}</td>
+          <td>${parseFloat(p.price).toFixed(2)} €</td>
+          <td>${p.tax_rate}%</td>
+          <td>${p.reference || '-'}</td>
+          <td>
+            <button class="btn btn-ghost btn-small">✏️ Modifier</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function filterInvoices() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+
+      const filtered = invoices.filter(inv => {
+        const matchSearch = !search || 
+          inv.invoice_number.toLowerCase().includes(search) ||
+          inv.client_name.toLowerCase().includes(search);
+        const matchStatus = !status || inv.status === status;
+        return matchSearch && matchStatus;
+      });
+
+      const tbody = document.getElementById('invoicesTableBody');
+      tbody.innerHTML = filtered.map(inv => `
+        <tr>
+          <td><strong>${inv.invoice_number}</strong></td>
+          <td>${inv.client_name}</td>
+          <td>${formatDate(inv.issue_date)}</td>
+          <td>${formatDate(inv.due_date)}</td>
+          <td><strong>${parseFloat(inv.total).toFixed(2)} €</strong></td>
+          <td><span class="badge badge-${inv.status}">${getStatusLabel(inv.status)}</span></td>
+          <td>
+            <div class="action-btns">
+              <button class="btn btn-ghost btn-small" onclick="viewInvoice(${inv.id})">👁️ Voir</button>
+              <button class="btn btn-ghost btn-small" onclick="editInvoice(${inv.id})">✏️</button>
+              <button class="btn btn-ghost btn-small" onclick="deleteInvoice(${inv.id})" style="color: #ef4444;">🗑️</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // View switching
+    function switchView(view) {
+      currentView = view;
+      
+      // Update navigation
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.view === view);
+      });
+
+      // Update title and button
+      const titles = {
+        invoices: 'Factures',
+        clients: 'Clients',
+        products: 'Produits/Services',
+        stats: 'Statistiques'
+      };
+      document.getElementById('viewTitle').textContent = titles[view];
+
+      // Show/hide views
+      document.getElementById('invoicesView').style.display = view === 'invoices' ? 'block' : 'none';
+      document.getElementById('clientsView').style.display = view === 'clients' ? 'block' : 'none';
+      document.getElementById('productsView').style.display = view === 'products' ? 'block' : 'none';
+      document.getElementById('statsSection').style.display = view === 'invoices' ? 'grid' : 'none';
+
+      // Update button
+      const btn = document.getElementById('btnNewInvoice');
+      if (view === 'clients') {
+        btn.textContent = '+ Nouveau client';
+        btn.onclick = openClientModal;
+      } else {
+        btn.textContent = '+ Nouvelle facture';
+        btn.onclick = openInvoiceModal;
+      }
+      btn.style.display = view === 'stats' ? 'none' : 'block';
+    }
+
+    // Invoice modal
+    function openInvoiceModal(id = null) {
+      editingInvoiceId = id;
+      document.getElementById('invoiceModalTitle').textContent = id ? 'Modifier la facture' : 'Nouvelle facture';
+      document.getElementById('invoiceModal').classList.add('active');
+      
+      if (id) {
+        loadInvoiceData(id);
+      } else {
+        document.getElementById('invoiceForm').reset();
+        setTodayDates();
+        document.getElementById('invoiceItemsBody').innerHTML = '';
+        addInvoiceItem();
+      }
+      calculateInvoiceTotals();
+    }
+
+    function closeInvoiceModal() {
+      document.getElementById('invoiceModal').classList.remove('active');
+      editingInvoiceId = null;
+    }
+
+    async function loadInvoiceData(id) {
+      try {
+        const res = await fetch(`${API_URL}/invoices/${id}`);
+        const invoice = await res.json();
+        
+        document.getElementById('invoiceId').value = invoice.id;
+        document.getElementById('invoiceClient').value = invoice.client_id;
+        document.getElementById('invoiceStatus').value = invoice.status;
+        document.getElementById('invoiceDate').value = invoice.issue_date;
+        document.getElementById('invoiceDueDate').value = invoice.due_date;
+        document.getElementById('invoiceNotes').value = invoice.notes || '';
+        document.getElementById('invoicePaymentTerms').value = invoice.payment_terms || '';
+        
+        // Load items
+        const itemsBody = document.getElementById('invoiceItemsBody');
+        itemsBody.innerHTML = '';
+        invoice.items.forEach(item => {
+          addInvoiceItem(item);
+        });
+        
+        calculateInvoiceTotals();
+      } catch (error) {
+        console.error('Error loading invoice:', error);
+        alert('Erreur de chargement de la facture');
+      }
+    }
+
+    function addInvoiceItem(item = null) {
+      const tbody = document.getElementById('invoiceItemsBody');
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td><input type="text" class="item-description" value="${item?.description || ''}" placeholder="Description" required></td>
+        <td><input type="number" class="item-quantity" value="${item?.quantity || 1}" step="0.01" min="0" onchange="calculateInvoiceTotals()"></td>
+        <td><input type="number" class="item-price" value="${item?.unit_price || 0}" step="0.01" min="0" onchange="calculateInvoiceTotals()"></td>
+        <td><input type="number" class="item-tax" value="${item?.tax_rate || 20}" step="0.01" min="0" max="100" onchange="calculateInvoiceTotals()"></td>
+        <td class="item-total">0.00 €</td>
+        <td><button type="button" onclick="this.closest('tr').remove(); calculateInvoiceTotals();" style="background: transparent; border: none; color: #ef4444; cursor: pointer; font-size: 16px;">×</button></td>
+      `;
+      tbody.appendChild(row);
+      calculateInvoiceTotals();
+    }
+
+    function calculateInvoiceTotals() {
+      const rows = document.querySelectorAll('#invoiceItemsBody tr');
+      let subtotal = 0;
+      let taxAmount = 0;
+
+      rows.forEach(row => {
+        const qty = parseFloat(row.querySelector('.item-quantity').value) || 0;
+        const price = parseFloat(row.querySelector('.item-price').value) || 0;
+        const taxRate = parseFloat(row.querySelector('.item-tax').value) || 0;
+        
+        const lineTotal = qty * price;
+        const lineTax = lineTotal * (taxRate / 100);
+        
+        row.querySelector('.item-total').textContent = `${lineTotal.toFixed(2)} €`;
+        
+        subtotal += lineTotal;
+        taxAmount += lineTax;
+      });
+
+      const total = subtotal + taxAmount;
+
+      document.getElementById('subtotalDisplay').textContent = `${subtotal.toFixed(2)} €`;
+      document.getElementById('taxDisplay').textContent = `${taxAmount.toFixed(2)} €`;
+      document.getElementById('totalDisplay').textContent = `${total.toFixed(2)} €`;
+    }
+
+    async function saveInvoice() {
+      const clientId = document.getElementById('invoiceClient').value;
+      if (!clientId) {
+        alert('Veuillez sélectionner un client');
+        return;
+      }
+
+      const rows = document.querySelectorAll('#invoiceItemsBody tr');
+      if (rows.length === 0) {
+        alert('Ajoutez au moins une ligne de facture');
+        return;
+      }
+
+      const items = Array.from(rows).map(row => ({
+        description: row.querySelector('.item-description').value,
+        quantity: parseFloat(row.querySelector('.item-quantity').value),
+        unit_price: parseFloat(row.querySelector('.item-price').value),
+        tax_rate: parseFloat(row.querySelector('.item-tax').value)
+      }));
+
+      const data = {
+        client_id: parseInt(clientId),
+        status: document.getElementById('invoiceStatus').value,
+        issue_date: document.getElementById('invoiceDate').value,
+        due_date: document.getElementById('invoiceDueDate').value,
+        notes: document.getElementById('invoiceNotes').value,
+        payment_terms: document.getElementById('invoicePaymentTerms').value,
+        items
+      };
+
+      try {
+        const id = editingInvoiceId;
+        const url = id ? `${API_URL}/invoices/${id}` : `${API_URL}/invoices`;
+        const method = id ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          closeInvoiceModal();
+          await loadData();
+          alert(id ? 'Facture mise à jour' : 'Facture créée');
+        } else {
+          throw new Error('Erreur serveur');
+        }
+      } catch (error) {
+        console.error('Error saving invoice:', error);
+        alert('Erreur lors de l\'enregistrement');
+      }
+    }
+
+    async function deleteInvoice(id) {
+      if (!confirm('Supprimer cette facture ?')) return;
+
+      try {
+        const res = await fetch(`${API_URL}/invoices/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          await loadData();
+          alert('Facture supprimée');
+        }
+      } catch (error) {
+        console.error('Error deleting invoice:', error);
+        alert('Erreur lors de la suppression');
+      }
+    }
+
+    function viewInvoice(id) {
+      const invoice = invoices.find(i => i.id === id);
+      alert(`Aperçu de la facture ${invoice.invoice_number}\n\nClient: ${invoice.client_name}\nMontant: ${parseFloat(invoice.total).toFixed(2)} €\nStatut: ${getStatusLabel(invoice.status)}`);
+    }
+
+    function editInvoice(id) {
+      openInvoiceModal(id);
+    }
+
+    // Client modal
+    function openClientModal(id = null) {
+      document.getElementById('clientModalTitle').textContent = id ? 'Modifier le client' : 'Nouveau client';
+      document.getElementById('clientModal').classList.add('active');
+      
+      if (id) {
+        const client = clients.find(c => c.id === id);
+        document.getElementById('clientId').value = client.id;
+        document.getElementById('clientName').value = client.name;
+        document.getElementById('clientEmail').value = client.email || '';
+        document.getElementById('clientPhone').value = client.phone || '';
+        document.getElementById('clientAddress').value = client.address || '';
+        document.getElementById('clientCity').value = client.city || '';
+        document.getElementById('clientPostalCode').value = client.postal_code || '';
+        document.getElementById('clientCountry').value = client.country || 'France';
+        document.getElementById('clientSiret').value = client.siret || '';
+        document.getElementById('clientNotes').value = client.notes || '';
+      } else {
+        document.getElementById('clientForm').reset();
+        document.getElementById('clientCountry').value = 'France';
+      }
+    }
+
+    function closeClientModal() {
+      document.getElementById('clientModal').classList.remove('active');
+    }
+
+    async function saveClient() {
+      const name = document.getElementById('clientName').value;
+      if (!name) {
+        alert('Le nom est requis');
+        return;
+      }
+
+      const data = {
+        name,
+        email: document.getElementById('clientEmail').value,
+        phone: document.getElementById('clientPhone').value,
+        address: document.getElementById('clientAddress').value,
+        city: document.getElementById('clientCity').value,
+        postal_code: document.getElementById('clientPostalCode').value,
+        country: document.getElementById('clientCountry').value,
+        siret: document.getElementById('clientSiret').value,
+        notes: document.getElementById('clientNotes').value
+      };
+
+      try {
+        const id = document.getElementById('clientId').value;
+        const url = id ? `${API_URL}/clients/${id}` : `${API_URL}/clients`;
+        const method = id ? 'PUT' : 'POST';
+
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        if (res.ok) {
+          closeClientModal();
+          await loadData();
+          alert(id ? 'Client mis à jour' : 'Client créé');
+        }
+      } catch (error) {
+        console.error('Error saving client:', error);
+        alert('Erreur lors de l\'enregistrement');
+      }
+    }
+
+    function editClient(id) {
+      openClientModal(id);
+    }
+
+    function populateClientSelect() {
+      const select = document.getElementById('invoiceClient');
+      select.innerHTML = '<option value="">Sélectionner un client</option>' +
+        clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+    }
+
+    // Utilities
+    function formatDate(dateStr) {
+      if (!dateStr) return '-';
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    }
+
+    function getStatusLabel(status) {
+      const labels = {
+        draft: 'Brouillon',
+        sent: 'Envoyé',
+        paid: 'Payé',
+        overdue: 'En retard',
+        cancelled: 'Annulé'
+      };
+      return labels[status] || status;
+    }
+  </script>
 </body>
 </html>
