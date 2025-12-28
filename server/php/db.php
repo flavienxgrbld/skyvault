@@ -1,9 +1,9 @@
 <?php
 // Connexion PDO vers MySQL (configuration Laragon par défaut)
-$host = 'localhost';
+$host = '192.168.1.13';
 $db   = 'skyvault';
-$user = 'root';
-$pass = '@Dmin_password';
+$user = 'admin';
+$pass = 'MotDePasseSolide';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";

@@ -3,9 +3,9 @@
 const mysql = require('mysql2/promise');
 
 // Configuration Laragon par défaut
-const DB_HOST = 'localhost';
-const DB_USER = 'root';
-const DB_PASS = '@Dmin_password';
+const DB_HOST = '192.168.1.13';
+const DB_USER = 'admin';
+const DB_PASS = 'MotDePasseSolide';
 const DB_NAME = 'skyvault';
 
 async function getConnection() {
